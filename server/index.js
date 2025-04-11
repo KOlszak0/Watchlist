@@ -32,14 +32,25 @@ app.get('/api/movies', (req, res) => {
 app.post('/api/movies', (req, res) => {
 	const movies = readMovies()
 	const newMovie = req.body
-
 	movies.push(newMovie)
 	saveMovies(movies)
-
 	res.status(201).json(newMovie)
+})
+
+app.delete('/api/movies/:id', (req, res) => {
+	const movies = readMovies()
+	const idToDelete = req.params.id
+	const updatedMovies = movies.filter(movie => movie.imdbID !== idToDelete)
+	saveMovies(updatedMovies)
+
+	if (movies.length > updatedMovies.length) {
+		res.status(201).end()
+	} else {
+		res.status(404).json({ error: 'Film nie znaleziony' })
+	}
 })
 
 //server launch
 app.listen(PORT, () => {
-	console.log(`Serwer działa na http://localhost:${PORT}`)
+	console.log(`Serwer dziaała na http://localhost:${PORT}`)
 })
