@@ -4,7 +4,6 @@ const cors = require('cors')
 const fs = require('fs')
 const fetch = require('node-fetch')
 
-
 //Configuration
 const app = express()
 const PORT = 4000
@@ -52,16 +51,35 @@ app.delete('/api/movies/:id', (req, res) => {
 	}
 })
 
+app.get('/api/watchlist', (req, res) => {
+	const data = readMovies()
+	res.json(data.watchlist)
+})
+
+app.post('/api/watchlist', (req, res) => {
+	const movies = readMovies()
+	const watchlist = movies.watchlist
+	const moviesToWatch = req.body
+	watchlist.push(moviesToWatch)
+	saveMovies(movies)
+	res.status(201).json(watchlist)
+})
+
+app.get('/api/watched', (req, res) => {
+	const data = readMovies()
+	res.json(data.watched)
+})
+
+
 
 app.get('/api/search', async (req, res) => {
 	const title = req.query.title
 	const url = `http://www.omdbapi.com/?apikey=TWÓJ_KLUCZ&t=${title}`
-	const response = await fetch(url);
+	const response = await fetch(url)
 	const data = await response.json()
 
 	res.json(data)
-  })
-  
+})
 
 //server launch
 app.listen(PORT, () => {
