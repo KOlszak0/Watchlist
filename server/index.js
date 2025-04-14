@@ -2,6 +2,8 @@
 const express = require('express')
 const cors = require('cors')
 const fs = require('fs')
+const fetch = require('node-fetch')
+
 
 //Configuration
 const app = express()
@@ -49,6 +51,17 @@ app.delete('/api/movies/:id', (req, res) => {
 		res.status(404).json({ error: 'Film nie znaleziony' })
 	}
 })
+
+
+app.get('/api/search', async (req, res) => {
+	const title = req.query.title
+	const url = `http://www.omdbapi.com/?apikey=TWÓJ_KLUCZ&t=${title}`
+	const response = await fetch(url);
+	const data = await response.json()
+
+	res.json(data)
+  })
+  
 
 //server launch
 app.listen(PORT, () => {
